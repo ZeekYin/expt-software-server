@@ -30,8 +30,12 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 できたら`{"xx.xx.xx.xx":"port"}`が返される
 存在しない場合は`#nothisroom#`が返される
 
+## 配信を見るのをやめる
+文字列`#quitroom#{"roomID:int"}`を送る
+できたら`#bye#`が返される
+
 ## 配信開始
-文字列`{"roomname:string":"port:int"}`を送る
+文字列`#startstreamming#{"roomname:string":"port:int"}`を送る
 できたら`{"roomID:int"}`が返される
 ## 配信終了
 文字列`#stop#`を送る
