@@ -13,11 +13,11 @@ userが存在しない場合は`#notexist#`が返される。
 passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 ## コメントを送る
-文字列`#comment#{"uid":"comment"}`を送る
+文字列`#comment#{"uid","roomid","comment"}`を送る
 できたら`#success#`が返される
 
 ## 投げ銭
-文字列`#tip#{"uid":"amount"}`を送る
+文字列`#tip#{"uid","roomid","amount"}`を送る
 できたら残高`{"balance:int"}`が返される
 残高が不足の場合は`#notenough#`が返される
 
@@ -39,7 +39,7 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 # response
 ## コメント
-`#comment#{"uid":"comment"}`が送られる
+`#comment#{"uid","roomid","comment"}`が送られる
 
 ## 投げ銭
 `#tip#{"uid":"amount"}`が送られる
