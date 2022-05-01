@@ -26,7 +26,7 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 `{“roomid1”:”room name”, “roomid2”:”room name”}`が返される
 
 ## 配信者のIPをもらう
-文字列`{"roomID:int"}`を送る
+文字列`#getroomip#{"roomID:int"}`を送る
 できたら`{"xx.xx.xx.xx":"port"}`が返される
 存在しない場合は`#nothisroom#`が返される
 
