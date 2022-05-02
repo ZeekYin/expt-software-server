@@ -2,8 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Server {
     public int PORT = 8080;
@@ -112,7 +111,7 @@ public class Server {
         if (request.matches("#login#")) {
             String ujson = request.substring("#login#{\"".length(), request.length() - 3);
             String[] info = ujson.split("\":\"");
-            int uid = Account.logIn(info[0], info[1]);
+            int uid = Account.logIn(info[0], info[1], socket);
             if (uid == -1) {
                 return "#notexist#";
             } else if (uid == -2) {

@@ -109,13 +109,14 @@ public class Account {
         }
     }
 
-    public static int logIn(String username, String passwd) {
+    public static int logIn(String username, String passwd, Socket socket) {
         Account user = null;
         int cnt = 0;
         for (Account i : users) {
             cnt++;
             if (i.name.equals(username)) {
                 user = i;
+                user.socket = socket;
                 break;
             }
         }
