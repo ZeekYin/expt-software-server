@@ -43,8 +43,11 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 # response
 ## コメント
-`#comment#{"uid","roomid","comment"}`が送られる
+`#comment#{"uid:int","roomid:int","comment:string"}`が送られる
 
 ## 投げ銭
-`#tip#{"uid":"amount"}`が送られる
+`#tip#{"uid:int","roomid:int","amount:int"}`が送られる
+
+## 配信中止
+`#LiveIsStopped#{"roomid:int"}`
 
