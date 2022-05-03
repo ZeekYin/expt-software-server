@@ -46,5 +46,5 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 `#comment#{"uid","roomid","comment"}`が送られる
 
 ## 投げ銭
-`#tip#{"uid":"amount"}`が送られる
+`#tip#{"uid","roomid","amount"}`が送られる
 
