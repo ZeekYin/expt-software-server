@@ -8,6 +8,7 @@ public class Server {
     public int PORT = 8080;
     List<Room> rooms = new ArrayList<Room>();
     List<Socket> clients = new ArrayList<Socket>();
+    Map<String, Integer> findUid = new HashMap<String, Integer>();
 
     public static void main(String[] args) {
 
@@ -58,10 +59,23 @@ public class Server {
         }
     }
 
-    public int makeNewRoom(String name, String IP, String port) {
-        Room room = new Room(name, IP, port);
+    public int FindUid(Socket socket) {
+        int uid = -1;
+        String str = socket.getRemoteSocketAddress().toString();
+        uid = findUid.get(str);
+        return uid;
+    }
+
+    public void userLogin(Socket socket, int uid) {
+        String str = socket.getRemoteSocketAddress().toString();
+        findUid.put(str, uid);
+        return;
+    }
+
+    public int makeNewRoom(int uid, String name, String IP, String port) {
+        Room room = new Room(uid, name, IP, port);
         this.rooms.add(room);
-        return rooms.size();// this is roomID
+        return rooms.size() - 1;// this is roomID
     }
 
     public String getRoomList() {
@@ -93,7 +107,26 @@ public class Server {
     public void stopStreamming(int index) {
         Room r = rooms.get(index);
         rooms.remove(r);
+        broadcast(0, index, "#LiveIsStopped#{\"" + index + "\"}");
         return;
+    }
+
+    public String broadcast(int from_uid, int roomID, String message) {
+        Room r = rooms.get(roomID);
+        for (Socket socket : r.listeners) {
+            try {
+                PrintWriter out = new PrintWriter(
+                        new BufferedWriter(
+                                new OutputStreamWriter(
+                                        socket.getOutputStream())),
+                        true);
+                out.println(message);
+            } catch (Exception e) {
+                System.out.println("Sending message to user" + FindUid(socket)
+                        + " " + socket.getInetAddress() + " in room" + roomID + "failed\n");
+            }
+        }
+        return "succeed";
     }
 
     public String handleRequest(String request, Socket socket) {
@@ -117,6 +150,7 @@ public class Server {
             } else if (uid == -2) {
                 return "#wrongpasswd#";
             } else {
+                userLogin(socket, uid);
                 return "{\"" + uid + "\"}";
             }
         }
@@ -124,37 +158,31 @@ public class Server {
             return this.getRoomList();
         }
         if (request.matches("#getroomip#")) {
-            // todo:
-            // add this listener to this room
-
-            //
             String ujson = request.substring("#getroomip#{\"".length(), request.length() - 3);
             int index = Integer.parseInt(ujson);
+            Room r = rooms.get(index);
+            r.listeners.add(socket);
             return "{\"" + this.getRoomIP(index) + "\":\"" + this.getRoomPort(index) + "\"";
         }
         if (request.matches("#comment#")) {
             String ujson = request.substring("#comment#{\"".length(), request.length() - 3);
             String info[] = ujson.split("\",\"");
             int user = Integer.parseInt(info[0]);
-            int roomid = Integer.parseInt(info[1]);
-            // todo:
-            // send this comment to all listeners in
-            // this room
-            return "#success#";
+            int roomID = Integer.parseInt(info[1]);
+            String message = info[2];
+            return broadcast(user, roomID, "#comment#{\"" + user + "\",\"" + roomID + "\",\"" + message + "\"}");
         }
         if (request.matches("#tip#")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 3);
             String info[] = ujson.split("\",\"");
             int user = Integer.parseInt(info[0]);
-            int roomid = Integer.parseInt(info[1]);
+            int roomID = Integer.parseInt(info[1]);
             int amount = Integer.parseInt(info[2]);
             try {
 
                 int balance = Account.reduceBalace(user, amount);
                 if (balance >= 0) {
-                    // todo:
-                    // send this tip action to all listeners in
-                    // this room
+                    broadcast(user, roomID, "#tip#{\"" + user + "\"," + roomID + "\",\"" + amount + "\"}");
                     return "{\"" + balance + "\"}";
                 } else {
                     return "#notenough#";
@@ -165,23 +193,26 @@ public class Server {
 
         }
         if (request.matches("#quitroom#")) {
-            // todo:
-            // remove this listener from this room
-
-            //
             String ujson = request.substring("#quitroom#{\"".length(), request.length() - 3);
             int index = Integer.parseInt(ujson);
+            Room r = rooms.get(index);
+            r.listeners.remove(socket);
             return "#bye#";
         }
         if (request.matches("#startstreamming#")) {
             String ujson = request.substring("#startstreamming#{\"".length(), request.length() - 3);
             String[] info = ujson.split("\":\"");
             String ip = socket.getRemoteSocketAddress().toString();
-            int uid = this.makeNewRoom(info[0], ip, info[1]);
+            int roomID = this.makeNewRoom(FindUid(socket), info[0], ip, info[1]);
+            return "{\"" + roomID + "\"}";
         }
         if (request.matches("#stop#")) {
-
+            String ujson = request.substring("#stop#{\"".length(), request.length() - 3);
+            int index = Integer.parseInt(ujson);
+            stopStreamming(index);
+            return "#bye#";
         }
+        return "#IllegalRequest#";
     }
 
 }

@@ -1,5 +1,6 @@
 package com.company;
 
+import java.net.Socket;
 import java.util.*;
 
 public class Room {
@@ -7,11 +8,13 @@ public class Room {
     String name;
     String address;
     String port;
-    List<Account> listeners = new ArrayList<Account>();
+    int liver;
+    List<Socket> listeners = new ArrayList<Socket>();
 
-    public Room(String roomname, String ip, String port) {
+    public Room(int uid, String roomname, String ip, String port) {
         name = roomname;
         address = ip;
         this.port = port;
+        liver = uid;
     }
 }
