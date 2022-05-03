@@ -178,10 +178,11 @@ public class Server {
             int user = Integer.parseInt(info[0]);
             int roomID = Integer.parseInt(info[1]);
             int amount = Integer.parseInt(info[2]);
+            Room r = rooms.get(roomID);
             try {
-
                 int balance = Account.reduceBalace(user, amount);
                 if (balance >= 0) {
+                    Account.reduceBalace(r.liver, 0 - amount);
                     broadcast(user, roomID, "#tip#{\"" + user + "\"," + roomID + "\",\"" + amount + "\"}");
                     return "{\"" + balance + "\"}";
                 } else {
