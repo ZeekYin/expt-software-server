@@ -15,7 +15,7 @@ public class Account {
     int deposit;
     // int uuid;
     String name, pass;
-    Socket socket;
+    //Socket socket;
 
     public static void init(String f) throws Exception {
         File file = new File(f);
@@ -109,14 +109,14 @@ public class Account {
         }
     }
 
-    public static int logIn(String username, String passwd, Socket socket) {
+    public static int logIn(String username, String passwd) {
         Account user = null;
         int cnt = 0;
         for (Account i : users) {
             cnt++;
             if (i.name.equals(username)) {
                 user = i;
-                user.socket = socket;
+                //user.socket = socket;
                 break;
             }
         }

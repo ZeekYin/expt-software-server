@@ -9,7 +9,7 @@ public class Room {
     String address;
     String port;
     int liver;
-    List<Socket> listeners = new ArrayList<Socket>();
+    List<Client> listeners = new ArrayList<Client>();
 
     public Room(int uid, String roomname, String ip, String port) {
         name = roomname;

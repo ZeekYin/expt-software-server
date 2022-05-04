@@ -5,8 +5,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Main {
-
+public class testClient {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         int PORT = 8080;
@@ -27,9 +26,6 @@ public class Main {
                                     new OutputStreamWriter(
                                             socket.getOutputStream())), true); // 送信バッファ設定
             while (true) {
-                String request = scanner.nextLine();
-                System.out.println("send:"+request);
-                out.println(request);
                 String response = in.readLine();
                 System.out.println(response);
             }
@@ -41,14 +37,3 @@ public class Main {
         }
     }
 }
-/*
-serverSocket.bind(new InetSocketAddress(8888));
-while(true){
-                var client = serverSocket.accept();
-                new Thread(()->{
-                    while (true){
-                        client.getInputStream()
-                    }
-                }).run();
-            }
-* */
