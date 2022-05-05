@@ -19,9 +19,9 @@ public class Server {
         Server server = new Server();
         try {
             ServerSocket s = new ServerSocket(server.PORT);
-            server.executor.submit(()->{
-                for(Client client:server.clients){
-                    if(client.socket.getRemoteSocketAddress()==null)
+            server.executor.submit(() -> {
+                for (Client client : server.clients) {
+                    if (client.socket.getRemoteSocketAddress() == null)
                         server.clients.remove(client);
                 }
             });
@@ -29,18 +29,19 @@ public class Server {
                 Socket socket;
                 try {
                     socket = s.accept();
-                    Client client= new Client(socket);
+                    Client client = new Client(socket);
                     server.clients.add(client);
                     System.out.println(socket + " is connected");
                     server.executor.submit(() -> {
-                        while(true){
+                        while (true) {
                             try {
                                 String request = client.in.readLine();
                                 System.out.println(request + "is received");
                                 client.out.println(server.handleRequest(request, client));
                             } catch (IOException e) {
                                 e.printStackTrace();
-                            }}
+                            }
+                        }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -111,7 +112,7 @@ public class Server {
     public String stopStreamming(int index) {
         Room r = rooms.get(index);
         rooms.remove(r);
-        new Thread(()-> {
+        new Thread(() -> {
             broadcast(0, index, "#LiveIsStopped#{\"" + index + "\"}");
         }).start();
         return "#bye#";
