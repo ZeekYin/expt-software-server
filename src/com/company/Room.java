@@ -3,7 +3,7 @@ package com.company;
 import java.net.Socket;
 import java.util.*;
 
-public class Room {
+public class Room{
 
     String name;
     String address;
@@ -17,4 +17,11 @@ public class Room {
         this.port = port;
         liver = uid;
     }
+    public void checkConnection(){
+        for(Client client : listeners){
+            if (client.socket.getRemoteSocketAddress() == null)
+                listeners.remove(client);
+        }
+    }
+
 }

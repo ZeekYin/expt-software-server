@@ -2,6 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +30,8 @@ public class Server {
                 Socket socket;
                 try {
                     socket = s.accept();
+                    socket.setOption(StandardSocketOptions.TCP_NODELAY, true);
+                    socket.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
                     Client client = new Client(socket);
                     server.clients.add(client);
                     System.out.println(socket + " is connected");
@@ -80,6 +83,15 @@ public class Server {
     public int makeNewRoom(int uid, String name, String IP, String port) {
         Room room = new Room(uid, name, IP, port);
         this.rooms.add(room);
+        executor.submit(()->{
+
+        });
+        executor.submit(()->{
+            while(rooms.contains(room)){
+                room.checkConnection();
+            }
+        });
+
         return rooms.size() - 1;// this is roomID
     }
 
@@ -158,7 +170,7 @@ public class Server {
                 return "{\"" + uid + "\"}";
             }
         }
-        if (request.matches("#getroooms#(.*)")) {
+        if (request.matches("#getrooms#(.*)")) {
             return this.getRoomList();
         }
         if (request.matches("#getroomip#(.*)")) {
@@ -166,7 +178,7 @@ public class Server {
             int index = Integer.parseInt(ujson);
             Room r = rooms.get(index);
             r.listeners.add(client);
-            return "{\"" + this.getRoomIP(index) + "\":\"" + this.getRoomPort(index) + "\"";
+            return "{\"" + this.getRoomIP(index) + "\":\"" + this.getRoomPort(index) + "\"}";
         }
         if (request.matches("#comment#(.*)")) {
             String ujson = request.substring("#comment#{\"".length(), request.length() - 2);

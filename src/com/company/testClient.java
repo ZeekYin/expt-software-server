@@ -11,7 +11,7 @@ public class testClient {
     public static void main(String[] args) throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Scanner scanner = new Scanner(System.in);
-        // int PORT = 8080;
+        //int PORT = 8080;
         InetAddress addr = InetAddress.getByName("localhost"); // IP アドレスへの変換
         System.out.println("addr = " + addr);
         Socket socket = new Socket(addr, 8080); // ソケットの生成
@@ -43,7 +43,7 @@ public class testClient {
             return;
         } finally {
             System.out.println("closing...");
-            socket.close();
+            //socket.close();
         }
     }
 }
