@@ -80,8 +80,8 @@ public class Server {
         return;
     }
 
-    public int makeNewRoom(int uid, String name, String IP, String port) {
-        Room room = new Room(uid, name, IP, port);
+    public int makeNewRoom(int uid, Client client,String name, String IP, String port) {
+        Room room = new Room(uid, client,name, IP, port);
         this.rooms.add(room);
         executor.submit(()->{
 
@@ -154,7 +154,7 @@ public class Server {
             } catch (Exception e) {
                 return "#failed#";
             }
-            return "{\"" + uid + "\"}";
+            return "{"+"\"uid\":"+"\"" + uid + "\"}";
         }
         if (request.matches("#login#(.*)")) {
             String ujson = request.substring("#login#{\"".length(), request.length() - 2);
@@ -167,7 +167,7 @@ public class Server {
                 return "#wrongpasswd#";
             } else {
                 userLogin(client, uid);
-                return "{\"" + uid + "\"}";
+                return "{"+"\"uid\":"+"\"" + uid + "\"}";
             }
         }
         if (request.matches("#getrooms#(.*)")) {
@@ -178,7 +178,7 @@ public class Server {
             int index = Integer.parseInt(ujson);
             Room r = rooms.get(index);
             r.listeners.add(client);
-            return "{\"" + this.getRoomIP(index) + "\":\"" + this.getRoomPort(index) + "\"}";
+            return "{\"ip\":\"" + this.getRoomIP(index) + "\",\"port\":\"" + this.getRoomPort(index) + "\"}";
         }
         if (request.matches("#comment#(.*)")) {
             String ujson = request.substring("#comment#{\"".length(), request.length() - 2);
@@ -220,7 +220,7 @@ public class Server {
             String ujson = request.substring("#startstreamming#{\"".length(), request.length() - 2);
             String[] info = ujson.split("\":\"");
             String ip = client.socket.getRemoteSocketAddress().toString();
-            int roomID = this.makeNewRoom(FindUid(client), info[0], ip, info[1]);
+            int roomID = this.makeNewRoom(FindUid(client), client,info[0], ip, info[1]);
             return "{\"" + roomID + "\"}";
         }
         if (request.matches("#stop#(.*)")) {

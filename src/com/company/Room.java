@@ -11,7 +11,8 @@ public class Room{
     int liver;
     List<Client> listeners = new ArrayList<Client>();
 
-    public Room(int uid, String roomname, String ip, String port) {
+    public Room(int uid, Client client,String roomname, String ip, String port) {
+        listeners.add(client);
         name = roomname;
         address = ip;
         this.port = port;
