@@ -3,7 +3,7 @@
 # request
 ## 新規登録
 文字列`#registration#{"username":"passwd"}`を送る
-できたら`{"uid:int"}`が返される
+できたら`{"uid":"uid:int"}`が返される
 すでに存在する場合は`#failed#`が返される。
 example
 #registration#{"junpei":"gashuin"}
