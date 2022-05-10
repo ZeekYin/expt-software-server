@@ -5,7 +5,8 @@
 文字列`#registration#{"username":"passwd"}`を送る
 できたら`{"uid:int"}`が返される
 すでに存在する場合は`#failed#`が返される。
-
+example
+#registration#{"junpei":"gashuin"}
 ## ログイン
 文字列`#login#{"username":"passwd"}`を送る
 できたら`{"uid:int"}`が返される
