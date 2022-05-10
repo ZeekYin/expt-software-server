@@ -3,12 +3,13 @@
 # request
 ## 新規登録
 文字列`#registration#{"username":"passwd"}`を送る
-できたら`{"uid:int"}`が返される
+できたら`{"uid":"uid:int"}`が返される
 すでに存在する場合は`#failed#`が返される。
-
+example
+#registration#{"junpei":"gashuin"}
 ## ログイン
 文字列`#login#{"username":"passwd"}`を送る
-できたら`{"uid:int"}`が返される
+できたら``{"uid":"uid:int"}`が返される
 userが存在しない場合は`#notexist#`が返される。
 passwordが正しくない場合は`#wrongpasswd#`が返される。
 
@@ -27,7 +28,7 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 ## 配信者のIPをもらう
 文字列`#getroomip#{"roomID:int"}`を送る
-できたら`{"xx.xx.xx.xx":"port"}`が返される
+できたら`{"ip":"xx.xx.xx.xx","port":"port:int"}`が返される
 存在しない場合は`#nothisroom#`が返される
 
 ## 配信を見るのをやめる
