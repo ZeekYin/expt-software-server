@@ -184,9 +184,10 @@ public class Server {
             String ujson = request.substring("#comment#{\"".length(), request.length() - 2);
             String info[] = ujson.split("\",\"");
             int user = Integer.parseInt(info[0]);
-            int roomID = Integer.parseInt(info[1]);
-            String message = info[2];
-            return broadcast(user, roomID, "#comment#{\"id\":\"" + user + "\",\"message\":\"" + message + "\"}");
+            String username = info[1];
+            int roomID = Integer.parseInt(info[2]);
+            String message = info[3];
+            return broadcast(user, roomID, "#comment#{\"username\":\"" + username + "\",\"message\":\"" + message + "\"}");
         }
         if (request.matches("#tip#(.*)")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 2);

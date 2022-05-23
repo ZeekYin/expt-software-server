@@ -14,7 +14,7 @@ userが存在しない場合は`#notexist#`が返される。
 passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 ## コメントを送る
-文字列`#comment#{"uid","roomid","comment"}`を送る
+文字列`#comment#{"uid","username","roomid","comment"}`を送る
 できたら`#success#`が返される
 
 ## 投げ銭
@@ -44,10 +44,10 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 
 # response
 ## コメント
-`#comment#{"uid:int","roomid:int","comment:string"}`が送られる
+`#comment#{"username":"username:string","comment":"comment:string"}`が送られる
 
 ## 投げ銭
-`#tip#{"uid:int","roomid:int","amount:int"}`が送られる
+`#tip#{"username":"username:string","amount":"amount:int"}`が送られる
 
 ## 配信中止
 `#LiveIsStopped#{"roomid:int"}`
