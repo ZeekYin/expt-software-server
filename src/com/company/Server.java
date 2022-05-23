@@ -22,7 +22,13 @@ public class Server {
             ServerSocket s = new ServerSocket(server.PORT);
             server.executor.submit(() -> {
                 for (Client client : server.clients) {
-                    if (client.socket.getRemoteSocketAddress() == null)
+                    if (client.socket.getRemoteSocketAddress() == null) {
+                        try {
+                            client.socket.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                         server.clients.remove(client);
                 }
             });
@@ -39,8 +45,14 @@ public class Server {
                         while (true) {
                             try {
                                 String request = client.in.readLine();
-                                System.out.println(request + "is received");
-                                client.out.println(server.handleRequest(request, client));
+                                if(request==null){
+                                    server.clients.remove(client);
+                                    System.out.println(client + "is disconnected");
+                                }
+                                else {
+                                    System.out.println(request + "is received");
+                                    client.out.println(server.handleRequest(request, client));
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

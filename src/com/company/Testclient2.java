@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main {
+public class Testclient2 {
     public static void main(String[] args) throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Scanner scanner = new Scanner(System.in);

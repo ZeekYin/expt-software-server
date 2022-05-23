@@ -17,6 +17,11 @@ public class Room{
         address = ip;
         this.port = port;
         liver = uid;
+        new Thread(()->{
+            while(true){
+                this.checkConnection();
+            }
+        }).run();
     }
     public void checkConnection(){
         for(Client client : listeners){
