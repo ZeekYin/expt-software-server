@@ -39,7 +39,7 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 文字列`#startstreamming#{"roomname:string":"port:int"}`を送る
 できたら`{"roomID:int"}`が返される
 ## 配信終了
-文字列`#stop#{"roomID:int"}`を送る
+文字列`#stop#{"roomID":"roomID:int"}`を送る
 できたら`#bye#`が返される
 
 # response
