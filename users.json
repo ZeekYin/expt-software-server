@@ -3,5 +3,6 @@
 "2":{"deposit":0,"name":"Test2","pass":"1234"},
 "3":{"deposit":100,"name":"Alice","pass":"1234"},
 "4":{"deposit":100,"name":"kobayashi","pass":"pass"},
-"5":{"deposit":100,"name":"gleam","pass":"0000"}
+"5":{"deposit":100,"name":"gleam","pass":"0000"},
+"6":{"deposit":100,"name":"aaaa","pass":"aaaa"}
 }
