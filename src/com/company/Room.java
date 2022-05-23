@@ -6,15 +6,13 @@ import java.util.*;
 public class Room{
 
     String name;
-    String address;
     String port;
     int liver;
     List<Client> listeners = new ArrayList<Client>();
 
-    public Room(int uid, Client client,String roomname, String ip, String port) {
+    public Room(int uid, Client client,String roomname, String port) {
         listeners.add(client);
         name = roomname;
-        address = ip;
         this.port = port;
         liver = uid;
     }
