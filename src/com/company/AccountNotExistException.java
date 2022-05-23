@@ -1,4 +1,4 @@
 package com.company;
 
-public class WrongPasswordException extends Exception {
+public class AccountNotExistException extends Exception {
 }

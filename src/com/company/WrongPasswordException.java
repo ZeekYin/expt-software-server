@@ -1,2 +1,4 @@
-package com.company;public class WrongPasswordException {
+package com.company;
+
+public class WrongPasswordException extends Exception {
 }
