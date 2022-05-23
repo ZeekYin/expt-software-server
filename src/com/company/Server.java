@@ -186,7 +186,7 @@ public class Server {
             int user = Integer.parseInt(info[0]);
             int roomID = Integer.parseInt(info[1]);
             String message = info[2];
-            return broadcast(user, roomID, "#comment#{\"" + user + "\",\"" + roomID + "\",\"" + message + "\"}");
+            return broadcast(user, roomID, "#comment#{\"id\":\"" + user + "\",\"message\":\"" + message + "\"}");
         }
         if (request.matches("#tip#(.*)")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 2);
@@ -221,7 +221,7 @@ public class Server {
             String[] info = ujson.split("\":\"");
             String ip = client.socket.getRemoteSocketAddress().toString();
             int roomID = this.makeNewRoom(FindUid(client), client,info[0], ip, info[1]);
-            return "{\"" + roomID + "\"}";
+            return "{\"roomID\":\"" + roomID + "\"}";
         }
         if (request.matches("#stop#(.*)")) {
             String ujson = request.substring("#stop#{\"".length(), request.length() - 2);
