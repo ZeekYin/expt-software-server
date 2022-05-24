@@ -2,9 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -172,9 +170,16 @@ public class Server {
         }
         if (request.matches("#listenroom#(.*)")) {
             String ujson = request.substring("#listenroom#{\"".length(), request.length() - 2);
-            int index = Integer.parseInt(ujson);
-            Room r = rooms.get(index);
+            String[] info = ujson.split("\",\"");
+            final int roomID = Integer.parseInt(info[0]);
+            final int uid = Integer.parseInt(info[1]);
+            final String ip = info[2];
+            final int port = Integer.parseInt(info[3]);
+            Room r = rooms.get(roomID);
             r.listeners.add(client);
+            System.out.println("SUCCESS?");
+            r.streamer.out.println("#startListen#{\"id\":\"" + uid + "\",\"ip\":\"" + ip + "\", \"port\":\"" + port + "\"}");
+            System.out.println("SUCCESS!");
             return "#success#";
         }
         if (request.matches("#comment#(.*)")) {
@@ -196,7 +201,7 @@ public class Server {
             try {
                 int balance = Account.reduceBalace(user, amount);
                 if (balance >= 0) {
-                    Account.reduceBalace(r.liver, 0 - amount);
+                    Account.reduceBalace(r.streamerID, 0 - amount);
                     broadcast(user, roomID, "#tip#{\"" + user + "\"," + roomID + "\",\"" + amount + "\"}");
                     return "{\"" + balance + "\"}";
                 } else {
@@ -209,9 +214,12 @@ public class Server {
         }
         if (request.matches("#quitroom#(.*)")) {
             String ujson = request.substring("#quitroom#{\"".length(), request.length() - 2);
-            int index = Integer.parseInt(ujson);
-            Room r = rooms.get(index);
+            String[] info = ujson.split("\",\"");
+            final int roomID = Integer.parseInt(info[0]);
+            final int uid = Integer.parseInt(info[1]);
+            Room r = rooms.get(roomID);
             r.listeners.remove(client);
+            r.streamer.out.println("#stopListen#{\"id\":\"" + uid + "\"}");
             return "#bye#";
         }
         if (request.matches("#startstreamming#(.*)")) {
