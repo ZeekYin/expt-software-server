@@ -142,13 +142,12 @@ public class Server {
         if (request.matches("#registration#(.*)")) {
             String ujson = request.substring("#registration#{\"".length(), request.length() - 2);
             String[] info = ujson.split("\":\"");
-            int uid = -1;
             try {
-                uid = Account.reg(info[0], info[1]);
+                final Account user = Account.reg(info[0], info[1]);
+                return "{"+"\"uid\":"+"\"" + user.id + "\",\"deposit\":"+"\"" + user.deposit + "\"}";
             } catch (Exception e) {
                 return "#failed#";
             }
-            return "{"+"\"uid\":"+"\"" + uid + "\"}";
         }
         if (request.matches("#login#(.*)")) {
             String ujson = request.substring("#login#{\"".length(), request.length() - 2);
@@ -194,16 +193,17 @@ public class Server {
         if (request.matches("#tip#(.*)")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 2);
             String info[] = ujson.split("\",\"");
-            int user = Integer.parseInt(info[0]);
-            int roomID = Integer.parseInt(info[1]);
-            int amount = Integer.parseInt(info[2]);
+            int userID = Integer.parseInt(info[0]);
+            String userName = info[1];
+            int roomID = Integer.parseInt(info[2]);
+            int amount = Integer.parseInt(info[3]);
             Room r = rooms.get(roomID);
             try {
-                int balance = Account.reduceBalace(user, amount);
+                int balance = Account.reduceBalace(userID, amount);
                 if (balance >= 0) {
                     Account.reduceBalace(r.streamerID, 0 - amount);
-                    broadcast(user, roomID, "#tip#{\"" + user + "\"," + roomID + "\",\"" + amount + "\"}");
-                    return "{\"" + balance + "\"}";
+                    broadcast(userID, roomID, "#tip#{\"username\":\"" + userName + "\",\"amount\":\"" + amount + "\"}");
+                    return "{\"balance\":\"" + balance + "\"}";
                 } else {
                     return "#notenough#";
                 }
