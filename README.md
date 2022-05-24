@@ -18,8 +18,8 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 できたら`#success#`が返される
 
 ## 投げ銭
-文字列`#tip#{"uid","roomid","amount"}`を送る
-できたら残高`{"balance:int"}`が返される
+文字列`#tip#{"uid","username","roomid","amount"}`を送る
+できたら残高`{"balance":"balance:int"}`が返される
 残高が不足の場合は`#notenough#`が返される
 
 ## 配信者一覧を見る
