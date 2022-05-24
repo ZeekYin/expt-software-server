@@ -63,6 +63,7 @@ public class Server {
             Account.init("users.json");
 
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("initialization failed\n");
         }
     }
@@ -80,8 +81,8 @@ public class Server {
         return;
     }
 
-    public int makeNewRoom(int uid, Client client,String name, String IP, String port) {
-        Room room = new Room(uid, client,name, IP, port);
+    public int makeNewRoom(int uid, Client client,String name, String port) {
+        Room room = new Room(uid, client,name, port);
         this.rooms.add(room);
         executor.submit(()->{
 
@@ -110,11 +111,6 @@ public class Server {
         ls += "}";
         return ls;
     }// {"1":"vsinger","2":"vtuber"}
-
-    public String getRoomIP(int index) {
-        Room r = rooms.get(index);
-        return r.address;
-    }
 
     public String getRoomPort(int index) {
         Room r = rooms.get(index);
@@ -160,33 +156,35 @@ public class Server {
             String ujson = request.substring("#login#{\"".length(), request.length() - 2);
             String[] info = ujson.split("\":\"");
             System.out.println(ujson);
-            int uid = Account.logIn(info[0], info[1]);
-            if (uid == -1) {
-                return "#notexist#";
-            } else if (uid == -2) {
-                return "#wrongpasswd#";
-            } else {
+            try {
+                Account account = Account.logIn(info[0], info[1]);
+                final int uid = account.id;
                 userLogin(client, uid);
-                return "{"+"\"uid\":"+"\"" + uid + "\"}";
+                return "{"+"\"uid\":"+"\"" + uid + "\",\"deposit\":"+"\"" + account.deposit + "\"}";
+            } catch (AccountNotExistException e) {
+                return "#notexist#";
+            } catch (WrongPasswordException e) {
+                return "#wrongpasswd#";
             }
         }
         if (request.matches("#getrooms#(.*)")) {
             return this.getRoomList();
         }
-        if (request.matches("#getroomip#(.*)")) {
-            String ujson = request.substring("#getroomip#{\"".length(), request.length() - 2);
+        if (request.matches("#listenroom#(.*)")) {
+            String ujson = request.substring("#listenroom#{\"".length(), request.length() - 2);
             int index = Integer.parseInt(ujson);
             Room r = rooms.get(index);
             r.listeners.add(client);
-            return "{\"ip\":\"" + this.getRoomIP(index) + "\",\"port\":\"" + this.getRoomPort(index) + "\"}";
+            return "#success#";
         }
         if (request.matches("#comment#(.*)")) {
             String ujson = request.substring("#comment#{\"".length(), request.length() - 2);
             String info[] = ujson.split("\",\"");
             int user = Integer.parseInt(info[0]);
-            int roomID = Integer.parseInt(info[1]);
-            String message = info[2];
-            return broadcast(user, roomID, "#comment#{\"" + user + "\",\"" + roomID + "\",\"" + message + "\"}");
+            String username = info[1];
+            int roomID = Integer.parseInt(info[2]);
+            String message = info[3];
+            return broadcast(user, roomID, "#comment#{\"username\":\"" + username + "\",\"message\":\"" + message + "\"}");
         }
         if (request.matches("#tip#(.*)")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 2);
@@ -219,9 +217,12 @@ public class Server {
         if (request.matches("#startstreamming#(.*)")) {
             String ujson = request.substring("#startstreamming#{\"".length(), request.length() - 2);
             String[] info = ujson.split("\":\"");
-            String ip = client.socket.getRemoteSocketAddress().toString();
-            int roomID = this.makeNewRoom(FindUid(client), client,info[0], ip, info[1]);
-            return "{\"" + roomID + "\"}";
+            final int uid = Integer.parseInt(info[0]);
+            final String roomname = info[1];
+            final String port  = info[2];
+            int roomID = this.makeNewRoom(uid, client, roomname, port);
+            System.out.println(roomID);
+            return "{\"roomID\":\"" + roomID + "\"}";
         }
         if (request.matches("#stop#(.*)")) {
             String ujson = request.substring("#stop#{\"".length(), request.length() - 2);

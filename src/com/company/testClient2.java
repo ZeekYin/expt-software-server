@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class testClient {
+public class testClient2 {
     public static void main(String[] args) throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Scanner scanner = new Scanner(System.in);
@@ -43,6 +43,7 @@ public class testClient {
             return;
         } finally {
             System.out.println("closing...");
+            //socket.close();
         }
     }
 }
