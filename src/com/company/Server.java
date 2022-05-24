@@ -119,9 +119,9 @@ public class Server {
 
     public String stopStreamming(int index) {
         Room r = rooms.get(index);
-        rooms.remove(r);
         new Thread(() -> {
             broadcast(0, index, "#LiveIsStopped#{\"" + index + "\"}");
+            rooms.remove(r);
         }).start();
         return "#bye#";
     }
@@ -226,8 +226,9 @@ public class Server {
         }
         if (request.matches("#stop#(.*)")) {
             String ujson = request.substring("#stop#{\"".length(), request.length() - 2);
-            int index = Integer.parseInt(ujson);
-            stopStreamming(index);
+            int roomID = Integer.parseInt(ujson);
+            System.out.println("stop roomID: " + roomID);
+            stopStreamming(roomID);
             return "#bye#";
         }
         return "#IllegalRequest#";

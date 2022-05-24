@@ -39,7 +39,7 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 文字列`#startstreamming#{"uid:string":"roomname:string":"port:int"}`を送る
 できたら`{"roomID":"roomID:int"}`が返される
 ## 配信終了
-文字列`#stop#{"roomID":"roomID:int"}`を送る
+文字列`#stop#{"roomID:int"}`を送る
 できたら`#bye#`が返される
 
 # response
@@ -50,5 +50,9 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 `#tip#{"username":"username:string","amount":"amount:int"}`が送られる
 
 ## 配信中止
-`#LiveIsStopped#{"roomid:int"}`
+`#LiveIsStopped#`
 
+## 音声配信要求
+
+
+## 音声配信要求
