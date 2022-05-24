@@ -2,46 +2,41 @@ package com.company;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.*;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 public class Account {
     public static int userCount = 0;
     public static String Directory = "users.json";
     public static List<Account> users = new ArrayList<Account>();
 
-    int deposit;
     // int uuid;
+    int deposit, id;
     String name, pass;
     //Socket socket;
 
+    private static int defaultDeposit = 300;
+
     public static void init(String f) throws Exception {
-        File file = new File(f);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String str = " ";
-        while (1 == 1) {
-            str = reader.readLine();
-            if (str == null)
-                break;
-            if (str.equals("{") || str.equals("}"))
-                continue;
-            int i = 0;
-            for (i = 0; i < str.length(); i++) {
-                if (str.charAt(i) == ':')
-                    break;
-            }
-            Gson gson = new Gson();
-            int indent = 0;
-            if (str.charAt(str.length() - 1) == ',') {
-                indent = 1;
-            }
-            System.out.println(str.substring(i + 1, str.length() - indent));
-            Account u = gson.fromJson(str.substring(i + 1, str.length() - indent), Account.class);
-            users.add(u);
+        JsonReader reader = new JsonReader(new FileReader(f));
+        System.out.println(reader);
+        Gson gson = new Gson();
+        Map<String, Map<String, ?>> usersMap = gson.fromJson(reader, Map.class);
+        usersMap.forEach((idStr, userData) -> {
+            final int id = Integer.parseInt(idStr);
+            final String name = (String) userData.get("name");
+            final String pass = (String) userData.get("pass");
+            final int deposit = ((Double) userData.get("deposit")).intValue();
+            final Account user = new Account(name, pass, deposit, id);
+            System.out.println("id: " + id + ", name: " + name + ", pass: " + pass + ", deposit: " + deposit);
             userCount++;
-        }
+            users.add(user);
+        });
     }
 
     public static void write(int uid, Account u, String f, Boolean isAppend, Boolean isLast) throws Exception {
@@ -63,12 +58,12 @@ public class Account {
         writer.close();
     }
 
-    public Account(String username, String passwd) {
+    public Account(String username, String passwd, int deposit, int id) {
         userCount++;
-        // this.uuid = userCount;
-        this.deposit = 100;
-        this.name = username;
+        this.deposit = deposit;
         this.pass = passwd;
+        this.name = username;
+        this.id = id;
     }
 
     private static int CheckAccountExist(String username) {
@@ -100,7 +95,8 @@ public class Account {
 
     public static int reg(String username, String passwd) throws Exception {
         if (CheckAccountExist(username) == -1) {
-            Account newUser = new Account(username, passwd);
+            userCount++;
+            Account newUser = new Account(username, passwd, defaultDeposit, userCount);
             users.add(newUser);
             update();
             return userCount;// uuid is current userCount
@@ -109,7 +105,7 @@ public class Account {
         }
     }
 
-    public static int logIn(String username, String passwd) {
+    public static Account logIn(String username, String passwd) throws AccountNotExistException, WrongPasswordException {
         Account user = null;
         int cnt = 0;
         for (Account i : users) {
@@ -121,11 +117,11 @@ public class Account {
             }
         }
         if (user == null) {
-            return -1;// this account does not exist
+            throw new AccountNotExistException();
         } else if (!user.pass.equals(passwd)) {
-            return -2;// passwd is incorrect
+            throw new WrongPasswordException();
         } else
-            return cnt;
+            return user;
     }
 
     public static int reduceBalace(int uid, int amount) throws Exception {
