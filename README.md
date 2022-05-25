@@ -9,7 +9,7 @@ example
 #registration#{"junpei":"gashuin"}
 ## ログイン
 文字列`#login#{"username":"passwd"}`を送る
-できたら``{"uid":"uid:int"}`が返される
+できたら`{"uid":"uid:int"}`が返される
 userが存在しない場合は`#notexist#`が返される。
 passwordが正しくない場合は`#wrongpasswd#`が返される。
 
@@ -18,8 +18,8 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 できたら`#success#`が返される
 
 ## 投げ銭
-文字列`#tip#{"uid","roomid","amount"}`を送る
-できたら残高`{"balance:int"}`が返される
+文字列`#tip#{"uid","username","roomid","amount"}`を送る
+できたら残高`{"balance":"balance:int"}`が返される
 残高が不足の場合は`#notenough#`が返される
 
 ## 配信者一覧を見る
@@ -27,19 +27,20 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 `{“roomid1”:”room name”, “roomid2”:”room name”}`が返される
 
 ## 配信部屋に入る
-文字列`#listenroom#{"roomID:int"}`を送る
+文字列`#listenroom#{"roomID:int","userID:int","ip:String","port:int"}`を送る
 できたら`#success#`が返される
 存在しない場合は`#nothisroom#`が返される
 
 ## 配信を見るのをやめる
-文字列`#quitroom#{"roomID:int"}`を送る
+文字列`#quitroom#{"roomID:int","userID:int"}`を送る
 できたら`#bye#`が返される
 
 ## 配信開始
 文字列`#startstreamming#{"uid:string":"roomname:string":"port:int"}`を送る
 できたら`{"roomID":"roomID:int"}`が返される
+
 ## 配信終了
-文字列`#stop#{"roomID":"roomID:int"}`を送る
+文字列`#stop#{"roomID:int"}`を送る
 できたら`#bye#`が返される
 
 # response
@@ -50,5 +51,10 @@ passwordが正しくない場合は`#wrongpasswd#`が返される。
 `#tip#{"username":"username:string","amount":"amount:int"}`が送られる
 
 ## 配信中止
-`#LiveIsStopped#{"roomid:int"}`
+`#LiveIsStopped#{"roomID:int"}`
 
+## 音声配信開始要求
+`#startListen#{"id":"ユーザーID","ip":"ipアドレス", "port":"ポート番号"}`
+
+## 音声配信停止要求
+`#stopListen#{"id":"ユーザーID"}`
