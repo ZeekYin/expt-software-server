@@ -93,13 +93,13 @@ public class Account {
         }
     }
 
-    public static int reg(String username, String passwd) throws Exception {
+    public static Account reg(String username, String passwd) throws Exception {
         if (CheckAccountExist(username) == -1) {
             userCount++;
             Account newUser = new Account(username, passwd, defaultDeposit, userCount);
             users.add(newUser);
             update();
-            return userCount;// uuid is current userCount
+            return newUser;// uuid is current userCount
         } else {
             throw new AccountExistException();// account is already exists
         }
