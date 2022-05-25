@@ -26,8 +26,20 @@ public class Server {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                    }
                         server.clients.remove(client);
+                    }
+                }
+            });
+            server.executor.submit(() -> {
+                for (int i = 0; i < server.rooms.size(); i++) {
+                    Room room = server.rooms.get(i);
+                    if (room.streamer.socket.getRemoteSocketAddress() == null) {
+                        final int index = i;
+                        new Thread(() -> {
+                            server.broadcast(0, index, "#LiveIsStopped#{\"" + index + "\"}");
+                            server.rooms.remove(room);
+                        }).start();
+                    }
                 }
             });
             while (true) {
@@ -43,11 +55,10 @@ public class Server {
                         while (true) {
                             try {
                                 String request = client.in.readLine();
-                                if(request==null){
+                                if (request == null) {
                                     server.clients.remove(client);
                                     System.out.println(client + "is disconnected");
-                                }
-                                else {
+                                } else {
                                     System.out.println(request + "is received");
                                     client.out.println(server.handleRequest(request, client));
                                 }
@@ -91,14 +102,14 @@ public class Server {
         return;
     }
 
-    public int makeNewRoom(int uid, Client client,String name, String port) {
-        Room room = new Room(uid, client,name, port);
+    public int makeNewRoom(int uid, Client client, String name, String port) {
+        Room room = new Room(uid, client, name, port);
         this.rooms.add(room);
-        executor.submit(()->{
+        executor.submit(() -> {
 
         });
-        executor.submit(()->{
-            while(rooms.contains(room)){
+        executor.submit(() -> {
+            while (rooms.contains(room)) {
                 room.checkConnection();
             }
         });
@@ -156,7 +167,7 @@ public class Server {
             String[] info = ujson.split("\":\"");
             try {
                 final Account user = Account.reg(info[0], info[1]);
-                return "{"+"\"uid\":"+"\"" + user.id + "\",\"deposit\":"+"\"" + user.deposit + "\"}";
+                return "{" + "\"uid\":" + "\"" + user.id + "\",\"deposit\":" + "\"" + user.deposit + "\"}";
             } catch (Exception e) {
                 return "#failed#";
             }
@@ -169,7 +180,7 @@ public class Server {
                 Account account = Account.logIn(info[0], info[1]);
                 final int uid = account.id;
                 userLogin(client, uid);
-                return "{"+"\"uid\":"+"\"" + uid + "\",\"deposit\":"+"\"" + account.deposit + "\"}";
+                return "{" + "\"uid\":" + "\"" + uid + "\",\"deposit\":" + "\"" + account.deposit + "\"}";
             } catch (AccountNotExistException e) {
                 return "#notexist#";
             } catch (WrongPasswordException e) {
@@ -189,7 +200,8 @@ public class Server {
             Room r = rooms.get(roomID);
             r.listeners.add(client);
             System.out.println("SUCCESS?");
-            r.streamer.out.println("#startListen#{\"id\":\"" + uid + "\",\"ip\":\"" + ip + "\", \"port\":\"" + port + "\"}");
+            r.streamer.out
+                    .println("#startListen#{\"id\":\"" + uid + "\",\"ip\":\"" + ip + "\", \"port\":\"" + port + "\"}");
             System.out.println("SUCCESS!");
             return "#success#";
         }
@@ -200,7 +212,8 @@ public class Server {
             String username = info[1];
             int roomID = Integer.parseInt(info[2]);
             String message = info[3];
-            return broadcast(user, roomID, "#comment#{\"username\":\"" + username + "\",\"message\":\"" + message + "\"}");
+            return broadcast(user, roomID,
+                    "#comment#{\"username\":\"" + username + "\",\"message\":\"" + message + "\"}");
         }
         if (request.matches("#tip#(.*)")) {
             String ujson = request.substring("#tip#{\"".length(), request.length() - 2);
@@ -239,7 +252,7 @@ public class Server {
             String[] info = ujson.split("\":\"");
             final int uid = Integer.parseInt(info[0]);
             final String roomname = info[1];
-            final String port  = info[2];
+            final String port = info[2];
             int roomID = this.makeNewRoom(uid, client, roomname, port);
             System.out.println(roomID);
             return "{\"roomID\":\"" + roomID + "\"}";
