@@ -5,5 +5,6 @@
 "4":{"deposit":100,"id":4,"name":"kobayashi","pass":"pass"},
 "5":{"deposit":100,"id":5,"name":"gleam","pass":"0000"},
 "6":{"deposit":100,"id":6,"name":"aaaa","pass":"aaaa"},
-"7":{"deposit":300,"id":7,"name":"bbbb","pass":"bbbb"}
+"7":{"deposit":300,"id":7,"name":"bbbb","pass":"bbbb"},
+"8":{"deposit":300,"id":15,"name":"jin","pass":"1234"}
 }

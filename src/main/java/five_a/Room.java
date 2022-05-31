@@ -1,4 +1,4 @@
-package com.company;
+package five_a;
 
 import java.util.*;
 
@@ -14,11 +14,6 @@ public class Room {
         listeners.add(client);
         name = roomname;
         this.port = port;
-        new Thread(() -> {
-            while (this != null) {
-                this.checkConnection();
-            }
-        }).run();
         streamer = client;
         streamerID = uid;
     }

@@ -1,17 +1,15 @@
-package com.company;
+package five_a;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class testClient {
+public class Main {
+
     public static void main(String[] args) throws Exception {
-        ExecutorService executor = Executors.newCachedThreadPool();
         Scanner scanner = new Scanner(System.in);
-        //int PORT = 8080;
+        int PORT = 8080;
         InetAddress addr = InetAddress.getByName("localhost"); // IP アドレスへの変換
         System.out.println("addr = " + addr);
         Socket socket = new Socket(addr, 8080); // ソケットの生成
@@ -25,24 +23,29 @@ public class testClient {
                             new OutputStreamWriter(
                                     socket.getOutputStream())),
                     true); // 送信バッファ設定
-
-            executor.submit(() -> {
-                while (true) {
-                    String response = in.readLine();
-                    System.out.println(response);
-                }
-            });
-            executor.submit(() -> {
-                while (true) {
-                    String str = scanner.nextLine();
-                    out.println(str);
-                }
-            });
-
+            while (true) {
+                String request = scanner.nextLine();
+                System.out.println("send:" + request);
+                out.println(request);
+                String response = in.readLine();
+                System.out.println(response);
+            }
         } catch (Exception e) {
             return;
         } finally {
             System.out.println("closing...");
+            socket.close();
         }
     }
 }
+/*
+ * serverSocket.bind(new InetSocketAddress(8888));
+ * while(true){
+ * var client = serverSocket.accept();
+ * new Thread(()->{
+ * while (true){
+ * client.getInputStream()
+ * }
+ * }).run();
+ * }
+ */

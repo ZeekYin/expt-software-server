@@ -1,4 +1,4 @@
-package com.company;
+package five_a;
 
 import java.io.*;
 import java.net.*;
@@ -20,26 +20,8 @@ public class Server {
             ServerSocket s = new ServerSocket(server.PORT);
             server.executor.submit(() -> {
                 for (Client client : server.clients) {
-                    if (client.socket.getRemoteSocketAddress() == null) {
-                        try {
-                            client.socket.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                    if (client.socket.getRemoteSocketAddress() == null)
                         server.clients.remove(client);
-                    }
-                }
-            });
-            server.executor.submit(() -> {
-                for (int i = 0; i < server.rooms.size(); i++) {
-                    Room room = server.rooms.get(i);
-                    if (room.streamer.socket.getRemoteSocketAddress() == null) {
-                        final int index = i;
-                        new Thread(() -> {
-                            server.broadcast(0, index, "#LiveIsStopped#{\"" + index + "\"}");
-                            server.rooms.remove(room);
-                        }).start();
-                    }
                 }
             });
             while (true) {
@@ -55,13 +37,8 @@ public class Server {
                         while (true) {
                             try {
                                 String request = client.in.readLine();
-                                if (request == null) {
-                                    server.clients.remove(client);
-                                    System.out.println(client + "is disconnected");
-                                } else {
-                                    System.out.println(request + "is received");
-                                    client.out.println(server.handleRequest(request, client));
-                                }
+                                System.out.println(request + "is received");
+                                client.out.println(server.handleRequest(request, client));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -151,7 +128,7 @@ public class Server {
         Room r = rooms.get(roomID);
         for (Client client : r.listeners) {
             try {
-                var out = client.out;
+                PrintWriter out = client.out;
                 out.println(message);
             } catch (Exception e) {
                 System.out.println("Sending message to user" + FindUid(client)
