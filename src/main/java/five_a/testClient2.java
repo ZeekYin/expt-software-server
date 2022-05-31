@@ -1,4 +1,4 @@
-package com.company;
+package five_a;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -7,11 +7,11 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main {
+public class testClient2 {
     public static void main(String[] args) throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Scanner scanner = new Scanner(System.in);
-        //int PORT = 8080;
+        // int PORT = 8080;
         InetAddress addr = InetAddress.getByName("localhost"); // IP アドレスへの変換
         System.out.println("addr = " + addr);
         Socket socket = new Socket(addr, 8080); // ソケットの生成
@@ -43,7 +43,7 @@ public class Main {
             return;
         } finally {
             System.out.println("closing...");
-            //socket.close();
+            // socket.close();
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.company;
+package five_a;
 
 import java.io.*;
 import java.net.Socket;
@@ -18,7 +18,7 @@ public class Account {
     // int uuid;
     int deposit, id;
     String name, pass;
-    //Socket socket;
+    // Socket socket;
 
     private static int defaultDeposit = 300;
 
@@ -105,14 +105,15 @@ public class Account {
         }
     }
 
-    public static Account logIn(String username, String passwd) throws AccountNotExistException, WrongPasswordException {
+    public static Account logIn(String username, String passwd)
+            throws AccountNotExistException, WrongPasswordException {
         Account user = null;
         int cnt = 0;
         for (Account i : users) {
             cnt++;
             if (i.name.equals(username)) {
                 user = i;
-                //user.socket = socket;
+                // user.socket = socket;
                 break;
             }
         }
